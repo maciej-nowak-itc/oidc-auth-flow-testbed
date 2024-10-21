@@ -19,8 +19,8 @@ app.use(express.json());
 
 app.post('/proxy', async (req, res) => {
   try {
-    console.log('todo, server\n', req.body);
     const endpoint = req.body.endpoint;
+    console.log('server, going to: ', endpoint);
     if (endpoint == null) {
       throw Error('Where do you want to go?');
     }
