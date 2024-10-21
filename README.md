@@ -1,6 +1,10 @@
-# Getting Started with Create React App
+# Project purpose
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project is intended to work as supporting tool for validation of JWT tokens issued in various flows.\
+It does assume that operator knows the client secret and prefereably can apply small changes to the OIDC client configuration, such as registering of localhost callback.\
+**You are using it on your own risk. I will repeat again you will need to provide client secret** so don't use it if you don't know how to check if you can trust that this application is not stealing your secret and sending some place you don't expect.\
+As a rule of thumb you should not trust this app and you should not use it.\
+But if you do, at least run it locally, where one can control foreground and background activity.
 
 ## Available Scripts
 
