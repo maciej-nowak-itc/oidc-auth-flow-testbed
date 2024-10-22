@@ -126,7 +126,7 @@ const ClientCredentialsGrantFlow = () => {
                 onChange={(e) => setTokenEndpoint(e.target.value)}
                 required
                 />
-             ) : <div>{tokenEndpoint || "Please provide Tenant ID"}</div> } 
+             ) : <div class="elaborated">{tokenEndpoint || "Auto generated. Please provide Tenant ID"}</div> } 
           </div>
 
           <SubmitMethodSelect
@@ -139,7 +139,7 @@ const ClientCredentialsGrantFlow = () => {
             onChange={(e) => setCorsBypass(e.target.checked)}
             />
 
-        <button type="submit">Get Token</button>
+        <button type="submit" class="submit">Get Token</button>
       </form>
 
       {token && (

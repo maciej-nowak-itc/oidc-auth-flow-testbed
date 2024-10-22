@@ -44,7 +44,7 @@ const AuthCodeGrantFlow = () => {
         window.location.href = authUrl;
       };
     
-      const handleGetToken = async () => {
+    const handleGetAuthToken = async () => {
         const params = {
             grant_type: 'authorization_code',
             client_id: clientId,
@@ -62,6 +62,10 @@ const AuthCodeGrantFlow = () => {
             setError('Failed to fetch the token. Please check your inputs.');
             setToken(null);
         }
+      };
+    
+      const handleGetIdToken = () => {
+         setError('Not implemented');
       };
     
     useEffect(() => {
@@ -121,16 +125,16 @@ const AuthCodeGrantFlow = () => {
             </div>
 
             <div>
-                <label>Auth Endpoint:</label>&nbsp;
-                {authEndpoint || "Please provide Tenant ID"}
+                <label>Auth Endpoint:</label>
+                <p class="elaborated">{authEndpoint || "Auto generated. Please provide Tenant ID"}</p>
             </div>
 
             <div>
-                <label>redirect_uri:</label>&nbsp;
-                {redirectUri}
+                <label>redirect_uri:</label>
+                <p class="elaborated">{redirectUri}</p>
                 <p class="small-letters warn">Be sure you register the redirect URI as approved target in your AAD. Perhaps I will add DNS masking later.</p>
             </div>
-            <button onClick={handleLogin}>Get Code</button>
+            <button class="submit" onClick={handleLogin}>Get Code</button>
 
             {authCode &&(
               <>
@@ -152,23 +156,25 @@ const AuthCodeGrantFlow = () => {
 
                 <div>
                     <label>Token Endpoint:</label>&nbsp;
-                    {tokenEndpoint || "Please provide Tenant ID"}
+                    <p class="elaborated">{tokenEndpoint || "Please provide Tenant ID"}</p>
                 </div>
-                <button onClick={handleGetToken}>Get Token</button>
+                <button class="submit" onClick={handleGetAuthToken}>Get Auth Token</button>
               </>
             )}
             {token && (
                 <div>
-                <h2>Access Token:</h2>
+                <label>Access Token:</label>
                 <textarea rows="10" cols="120" readOnly value={token}></textarea>
                 </div>
             )}
             {parsedToken && (
                 <div>
-                <h2>Parsed token:</h2>
+                <label>Parsed token:</label>
                 <textarea rows="20" cols="120" readOnly value={JSON.stringify(parsedToken, null, 2)}></textarea>
                 </div>
             )}
+
+            <button class="submit" onClick={handleGetIdToken}>Get Id Token</button>
 
             {error && (<p style={{ color: 'red' }}>{error}</p>)}
             
