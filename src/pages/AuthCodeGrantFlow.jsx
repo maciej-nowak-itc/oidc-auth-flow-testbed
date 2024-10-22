@@ -16,21 +16,31 @@ const AuthCodeGrantFlow = () => {
     const [tokenEndpoint, setTokenEndpoint] = useState();
     const [token, setToken] = useState(null);
     const [parsedToken, setParsedToken] = useState(null);
+    const [parsedIdToken, setParsedIdToken] = useState(null);
     const [error, setError] = useState(null);
 
-    const elaborateAADtenant = (newtenantId) => {
-        setAuthEndpoint(`https://login.microsoftonline.com/${newtenantId}/oauth2/v2.0/authorize`);
-        setTokenEndpoint(`https://login.microsoftonline.com/${newtenantId}/oauth2/v2.0/token`);
+    const saveToLocalStorage = (key, value) => {
+        localStorage.setItem(key, value);
       };
 
-    const handleTenantIdChange = (event) => {
-        const newtenantId = event.target.value;
-    
+    const elaborateAADtenant = (newtenantId) => {
+        if (newtenantId != null) {
+            setAuthEndpoint(`https://login.microsoftonline.com/${newtenantId}/oauth2/v2.0/authorize`);
+            setTokenEndpoint(`https://login.microsoftonline.com/${newtenantId}/oauth2/v2.0/token`);
+        } else {
+            setAuthEndpoint(null);
+            setTokenEndpoint(null);
+        }
+      };
+
+    const handleTenantIdChange = (newtenantId) => {
         setTenantId(newtenantId);
         elaborateAADtenant(newtenantId);
+        saveToLocalStorage('tenantId', newtenantId);
       };
     const handleClaimsChange = (event) => {
         setClaims(event.target.value);
+        saveToLocalStorage('claims', event.target.value);
       };
     
     const handleLogin = () => {
@@ -57,15 +67,12 @@ const AuthCodeGrantFlow = () => {
             const data = await submitRequest(true, tokenEndpoint, SubmitMethods.POST_URLENCODED, params);
             setToken(data.access_token);
             setParsedToken(decodeJWT(data.access_token));
+            setParsedIdToken(decodeJWT(data.id_token));
             setError(null);
         } catch (err) {
             setError('Failed to fetch the token. Please check your inputs.');
             setToken(null);
         }
-      };
-    
-      const handleGetIdToken = () => {
-         setError('Not implemented');
       };
     
     useEffect(() => {
@@ -77,6 +84,15 @@ const AuthCodeGrantFlow = () => {
         } else {
           setAuthCode(null);
         }
+
+        const savedTenantId = localStorage.getItem('tenantId');
+        if (savedTenantId) handleTenantIdChange(savedTenantId);
+
+        const savedClientId = localStorage.getItem('clientId');
+        if (savedClientId) setClientId(savedClientId);
+
+        const savedClaims = localStorage.getItem('claims');
+        if (savedClaims) setClaims(savedClaims);
       }, []);
 
     return (
@@ -89,7 +105,7 @@ const AuthCodeGrantFlow = () => {
                 <input
                 type="text"
                 value={tenantId}
-                onChange={handleTenantIdChange}
+                onChange={(e) => handleTenantIdChange(e.target.value)}
                 required
                 />
             </div>
@@ -99,7 +115,10 @@ const AuthCodeGrantFlow = () => {
                 <input
                     type="text"
                     value={clientId}
-                    onChange={(e) => setClientId(e.target.value)}
+                    onChange={(e) => {
+                        setClientId(e.target.value);
+                        saveToLocalStorage('clientId', e.target.value);
+                    }}
                     required
                 />
             </div>
@@ -174,7 +193,12 @@ const AuthCodeGrantFlow = () => {
                 </div>
             )}
 
-            <button class="submit" onClick={handleGetIdToken}>Get Id Token</button>
+            {parsedIdToken && (
+                <div>
+                <label>Id token:</label>
+                <textarea rows="20" cols="120" readOnly value={JSON.stringify(parsedIdToken, null, 2)}></textarea>
+                </div>
+            )}
 
             {error && (<p style={{ color: 'red' }}>{error}</p>)}
             

@@ -12,7 +12,6 @@
 }
 
 #workpane {
-  border: solid red 1px;
   flex-grow: 1;
 }
 
@@ -92,6 +91,10 @@ textarea {
   font-family: monospace;
   border-radius: 5px;
   border: 1px solid #ccc;
+}
+
+textarea[readonly] {
+  background-color: lightgray;
 }
 
 p {

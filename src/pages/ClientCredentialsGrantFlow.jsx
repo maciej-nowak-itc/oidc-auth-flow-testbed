@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import SubmitMethods from '../types/SubmitMethods';
 import SubmitMethodSelect from '../components/SubmitMethodSelect';
 import CorsBypass from '../components/CorsBypass';
@@ -33,9 +33,7 @@ const ClientCredentialsGrantFlow = () => {
     }
   };
 
-  const handleTenantIdChange = (event) => {
-    const newtenantId = event.target.value;
-
+  const handleTenantIdChange = (newtenantId) => {
     setTenantId(newtenantId);
     elaborateAADtenant(newtenantId);
   };
@@ -61,6 +59,14 @@ const ClientCredentialsGrantFlow = () => {
     }
   };
 
+  useEffect(() => {
+    const savedTenantId = localStorage.getItem('tenantId');
+    if (savedTenantId) handleTenantIdChange(savedTenantId);
+
+    const savedClientId = localStorage.getItem('clientId');
+    if (savedClientId) setClientId(savedClientId);
+  }, []);
+
   return (
     <div>
       <h2>Client Credentials Grant Flow</h2>
@@ -79,7 +85,7 @@ const ClientCredentialsGrantFlow = () => {
             <input
               type="text"
               value={tenantId}
-              onChange={handleTenantIdChange}
+              onChange={(e) => handleTenantIdChange(e.target.value)}
               required
             />
           </div>
