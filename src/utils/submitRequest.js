@@ -24,8 +24,8 @@ const submitRequest = async (serverProxy, endpoint, method, params) => {
       response = await axios.post('/proxy', requestBody);
       return response.data;
     } else {
-        return {access_token: new Date()};
-        /* if (method === SubmitMethods.GET) {
+        //return {access_token: new Date()};
+        if (method === SubmitMethods.GET) {
             if (params) {
                 const urlParams = new URLSearchParams(params);
                 response = await axios.get(`${endpoint}?${urlParams.toString()}`);
@@ -48,7 +48,7 @@ const submitRequest = async (serverProxy, endpoint, method, params) => {
             });
         }
 
-        return response.data; */
+        return response.data;
     }
   } catch (error) {
     console.error("Error during request submission:", error);

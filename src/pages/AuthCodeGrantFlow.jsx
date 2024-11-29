@@ -8,7 +8,8 @@ const AuthCodeGrantFlow = () => {
     const [clientId, setClientId] = useState('');
     const [scopes, setScopes] = useState('openid profile email');
     const [claims, setClaims] = useState('');
-    const [redirectUri, setRedirectUri] = useState('http://localhost:3000/auth-code-grant');
+    //const [redirectUri, setRedirectUri] = useState('http://localhost:3000/auth-code-grant');
+    const [redirectUri, setRedirectUri] = useState('');
     const [authEndpoint, setAuthEndpoint] = useState('');
     // Code-to-token
     const [authCode, setAuthCode] = useState(null);
@@ -76,6 +77,12 @@ const AuthCodeGrantFlow = () => {
       };
     
     useEffect(() => {
+        // Establish redirect URI, pointing to self
+        const { protocol, hostname, port, pathname} = window.location;
+        const portPart = port ? `:${port}` : '';
+        setRedirectUri(`${protocol}//${hostname}${portPart}${pathname}`);
+
+        // get Code if back from IdP
         const urlParams = new URLSearchParams(window.location.search);
         const code = urlParams.get('code');
     
@@ -177,7 +184,7 @@ const AuthCodeGrantFlow = () => {
                     <label>Token Endpoint:</label>&nbsp;
                     <p class="elaborated">{tokenEndpoint || "Please provide Tenant ID"}</p>
                 </div>
-                <button class="submit" onClick={handleGetAuthToken}>Get Auth Token</button>
+                <button class="submit" onClick={handleGetAuthToken}>Get Tokens</button>
               </>
             )}
             {token && (
